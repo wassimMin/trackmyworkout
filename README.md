@@ -1,4 +1,3 @@
-
 project structure: 
 
 First Page Days
