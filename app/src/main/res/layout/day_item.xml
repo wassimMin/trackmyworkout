@@ -2,8 +2,9 @@
     android:id="@+id/buttonDay"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="@drawable/button_background"
+    android:backgroundTint="@color/titleColor"
     android:textColor="@color/background"
+    android:shadowColor="@color/black"
     android:textSize="18sp"
     android:padding="10dp"
     android:layout_marginTop="5dp"/>

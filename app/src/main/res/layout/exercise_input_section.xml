@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@drawable/exercise_input_background"
+    android:layout_marginTop="8dp">
+
+    <EditText
+        android:id="@+id/et_exercise_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Exercise Name"
+        android:padding="8dp"
+        android:background="@drawable/edit_text_background"/>
+
+    <EditText
+        android:id="@+id/set_sets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Set sets"
+        android:padding="8dp"
+        android:inputType="number"
+        android:background="@drawable/edit_text_background"/>
+
+    <!-- Container for sets -->
+    <LinearLayout
+        android:id="@+id/set_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

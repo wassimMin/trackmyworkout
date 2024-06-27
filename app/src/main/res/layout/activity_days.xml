@@ -27,6 +27,8 @@
         android:layout_height="wrap_content"
         android:text="Days"
         android:textSize="30sp"
+        android:layout_gravity="center"
+        android:textStyle="bold"
         android:fontFamily="@font/ubuntu"
         android:layout_marginTop="40sp"/>
     <androidx.recyclerview.widget.RecyclerView
