@@ -7,6 +7,7 @@
     android:padding="10dp">
 
     <EditText
+        android:id="@+id/set_reps"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -17,11 +18,20 @@
         android:background="@drawable/edit_text_background"/>
 
     <EditText
+        android:id="@+id/set_weight"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:hint="Weight"
         android:inputType="numberDecimal"
         android:padding="8dp"
+        android:background="@drawable/edit_text_background"/>
+    <Spinner
+        android:id="@+id/spinner_weight_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/weight_units"
+        android:padding="8dp"
+        android:hint="Unit"
         android:background="@drawable/edit_text_background"/>
 </LinearLayout>
