@@ -7,7 +7,15 @@
     android:padding="8dp"
     android:background="@drawable/exercise_input_background"
     android:layout_marginTop="8dp">
-
+    <ImageButton
+        android:id="@+id/btn_remove_exercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Remove Exercise"
+        android:padding="10dp"
+        android:src="@drawable/baseline_delete_24" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +27,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Exercise X"
+            android:text="Exercise Name"
             android:background="@color/background"
             android:textColor="@android:color/black"
             android:textSize="16sp"
@@ -42,12 +50,19 @@
             android:background="@drawable/edit_text_background"/>
 
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/set_container"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:layout_marginTop="8dp"/>
+        android:fillViewport="true"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:id="@+id/set_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"/>
+
+    </ScrollView>
 
 </LinearLayout>

@@ -9,8 +9,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -22,7 +24,7 @@ public class DayActivity extends AppCompatActivity {
     private LinearLayout exerciseContainer;
     Intent intent;
     String dayName;
-    Button btnAddExercise = findViewById(R.id.btn_add_exercise);
+    Button btnAddExercise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +40,39 @@ public class DayActivity extends AppCompatActivity {
                 addExerciseSection();
             }
         });
+        loadExercises();
     }
-    private void addExerciseSection(){
+
+    private void addExerciseSection() {
         LayoutInflater inflater = LayoutInflater.from(this);
-        View exerciseSection = inflater.inflate(R.layout.exercise_input_section, exerciseContainer,false);
+        View exerciseSection = inflater.inflate(R.layout.exercise_input_section, exerciseContainer, false);
 
         Spinner spinnerSets = exerciseSection.findViewById(R.id.spinner_sets);
         LinearLayout setContainer = exerciseSection.findViewById(R.id.set_container);
 
-        int numSets = Integer.parseInt(spinnerSets.getSelectedItem().toString());
-        for (int i = 0; i < numSets; i++) {
-            View setView = inflater.inflate(R.layout.set_input, setContainer, false);
-            setContainer.addView(setView);
-        }
+        spinnerSets.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int numSets = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                setContainer.removeAllViews();
+                for (int i = 0; i < numSets; i++) {
+                    View setView = inflater.inflate(R.layout.set_input, setContainer, false);
+                    setContainer.addView(setView);
+                }
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        ImageButton btnRemoveExercise = exerciseSection.findViewById(R.id.btn_remove_exercise);
+        btnRemoveExercise.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exerciseContainer.removeView(exerciseSection);
+                saveExercises();
+            }
+        });
         exerciseContainer.addView(exerciseSection);
         saveExercises();
     }
@@ -85,7 +106,7 @@ public class DayActivity extends AppCompatActivity {
                 }
                 exerciseObject.put("sets", setsArray);
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
             exercisesArray.put(exerciseObject);
         }
@@ -110,10 +131,25 @@ public class DayActivity extends AppCompatActivity {
                 etExerciseName.setText(exercsiseObject.getString("exerciseName"));
                 spinnerSets.setSelection(getSpinnerIndex(spinnerSets, exercsiseObject.getString("numSets")));
                 JSONArray setsArray = exercsiseObject.getJSONArray("sets");
-                
+                for(int j=0;j<setsArray.length();j++){
+                    JSONObject setObject = setsArray.getJSONObject(j);
+
+                    View setView = inflater.inflate(R.layout.set_input, setContainer, false);
+
+                    EditText etReps = setView.findViewById(R.id.set_reps);
+                    EditText etWeight = setView.findViewById(R.id.set_weight);
+                    Spinner spinnerWeightUnit = setView.findViewById(R.id.spinner_weight_unit);
+
+                    etReps.setText(setObject.getString("reps"));
+                    etWeight.setText(setObject.getString("weight"));
+                    spinnerWeightUnit.setSelection(getSpinnerIndex(spinnerWeightUnit, setObject.getString("weightUnit")));
+
+                    setContainer.addView(setView);
+                }
+                exerciseContainer.addView(exerciseSection);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
     private int getSpinnerIndex(Spinner spinner, String value) {
