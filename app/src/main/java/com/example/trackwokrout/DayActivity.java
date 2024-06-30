@@ -1,5 +1,7 @@
 package com.example.trackwokrout;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -7,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,6 +34,7 @@ public class DayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day);
         intent = getIntent();
+//         clearSharedPreferences();
         dayName = intent.getStringExtra("dayName");
         exerciseContainer = findViewById(R.id.exercise_container);
         btnAddExercise = findViewById(R.id.btn_add_exercise);
@@ -46,6 +50,7 @@ public class DayActivity extends AppCompatActivity {
     private void addExerciseSection() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View exerciseSection = inflater.inflate(R.layout.exercise_input_section, exerciseContainer, false);
+        Log.d(TAG, "Exercise section inflated.");
 
         Spinner spinnerSets = exerciseSection.findViewById(R.id.spinner_sets);
         LinearLayout setContainer = exerciseSection.findViewById(R.id.set_container);
@@ -65,22 +70,27 @@ public class DayActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
         ImageButton btnRemoveExercise = exerciseSection.findViewById(R.id.btn_remove_exercise);
         btnRemoveExercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "Remove button clicked.");
                 exerciseContainer.removeView(exerciseSection);
                 saveExercises();
             }
         });
+
         exerciseContainer.addView(exerciseSection);
         saveExercises();
     }
-    private void saveExercises(){
+
+    private void saveExercises() {
         SharedPreferences sharedPreferences = getSharedPreferences("workout", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         JSONArray exercisesArray = new JSONArray();
-        for(int i=0;i<exerciseContainer.getChildCount();i++){
+
+        for (int i = 0; i < exerciseContainer.getChildCount(); i++) {
             View exerciseSection = exerciseContainer.getChildAt(i);
             EditText etExerciseName = exerciseSection.findViewById(R.id.et_exercise_name);
             Spinner spinnerSets = exerciseSection.findViewById(R.id.spinner_sets);
@@ -110,28 +120,29 @@ public class DayActivity extends AppCompatActivity {
             }
             exercisesArray.put(exerciseObject);
         }
+
         editor.putString(dayName, exercisesArray.toString());
         editor.apply();
     }
-    private void loadExercises(){
+
+    private void loadExercises() {
         SharedPreferences sharedPreferences = getSharedPreferences("workout", Context.MODE_PRIVATE);
         String exercisesString = sharedPreferences.getString(dayName, "[]");
         try {
             JSONArray exercisesArray = new JSONArray(exercisesString);
-            for(int i=0;i<exercisesArray.length();i++){
-                JSONObject exercsiseObject = exercisesArray.getJSONObject(i);
+            for (int i = 0; i < exercisesArray.length(); i++) {
+                JSONObject exerciseObject = exercisesArray.getJSONObject(i);
                 LayoutInflater inflater = LayoutInflater.from(this);
                 View exerciseSection = inflater.inflate(R.layout.exercise_input_section, exerciseContainer, false);
-
 
                 EditText etExerciseName = exerciseSection.findViewById(R.id.et_exercise_name);
                 Spinner spinnerSets = exerciseSection.findViewById(R.id.spinner_sets);
                 LinearLayout setContainer = exerciseSection.findViewById(R.id.set_container);
 
-                etExerciseName.setText(exercsiseObject.getString("exerciseName"));
-                spinnerSets.setSelection(getSpinnerIndex(spinnerSets, exercsiseObject.getString("numSets")));
-                JSONArray setsArray = exercsiseObject.getJSONArray("sets");
-                for(int j=0;j<setsArray.length();j++){
+                etExerciseName.setText(exerciseObject.getString("exerciseName"));
+                spinnerSets.setSelection(getSpinnerIndex(spinnerSets, exerciseObject.getString("numSets")));
+                JSONArray setsArray = exerciseObject.getJSONArray("sets");
+                for (int j = 0; j < setsArray.length(); j++) {
                     JSONObject setObject = setsArray.getJSONObject(j);
 
                     View setView = inflater.inflate(R.layout.set_input, setContainer, false);
@@ -146,12 +157,25 @@ public class DayActivity extends AppCompatActivity {
 
                     setContainer.addView(setView);
                 }
+
+                // Set the remove button listener again
+                ImageButton btnRemoveExercise = exerciseSection.findViewById(R.id.btn_remove_exercise);
+                btnRemoveExercise.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d(TAG, "Remove button clicked.");
+                        exerciseContainer.removeView(exerciseSection);
+                        saveExercises();
+                    }
+                });
+
                 exerciseContainer.addView(exerciseSection);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     private int getSpinnerIndex(Spinner spinner, String value) {
         for (int i = 0; i < spinner.getCount(); i++) {
             if (spinner.getItemAtPosition(i).toString().equals(value)) {
@@ -159,5 +183,12 @@ public class DayActivity extends AppCompatActivity {
             }
         }
         return 0;
+    }
+
+    private void clearSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("workout", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
     }
 }
